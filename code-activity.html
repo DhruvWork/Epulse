@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Activity - EngineerPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/help-system.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/performance-monitor.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-link {
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        .sidebar-link:hover {
+            background-color: #f3f4f6;
+            transform: translateX(4px);
+        }
+        .sidebar-link.active {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        .dark-mode .bg-white {
+            background-color: #374151;
+        }
+        .dark-mode .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark-mode .text-gray-600 {
+            color: #d1d5db;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">EngineerPulse</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation">12</span>
+                </a>
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="trello" class="w-5 h-5"></i>
+                    <span>Project Tasks</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button onclick="window.navigationManager?.showNavigationMenu()"
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition-colors mb-2"
+                    title="Quick Navigation (Ctrl+Shift+N)">
+                <i data-feather="compass" class="w-4 h-4 mr-2"></i>
+                <span>Navigate</span>
+            </button>
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Code Activity</h1>
+            <button class="bg-indigo-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Refresh</span>
+            </button>
+        </header>
+
+        <!-- Secondary Navigation Bar for Desktop -->
+        <div class="hidden md:block bg-indigo-600 text-white shadow-sm">
+            <div class="px-6 py-3">
+                <div class="flex items-center justify-between">
+                    <div id="breadcrumbs" class="flex-1"></div>
+                    <div class="flex items-center space-x-4">
+                        <div id="quick-nav" class="hidden lg:block"></div>
+                        <div id="page-actions"></div>
+                        <button class="bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded-md flex items-center transition-colors duration-200">
+                            <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6">
+            <!-- Page Header -->
+            <div class="hidden md:flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Code Activity</h1>
+                <div class="flex space-x-2">
+                    <select onchange="updateTimeRange(this.value)" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Mobile Page Header -->
+            <div class="md:hidden mb-4">
+                <div class="flex items-center justify-between">
+                    <select onchange="updateTimeRange(this.value)" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+<!-- GitHub Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Commits</h3>
+                        <i data-feather="git-commit" class="w-5 h-5 text-indigo-600"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800">142</div>
+                    <div class="text-sm text-green-500 mt-2">↑ 15% from last period</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Pull Requests</h3>
+                        <i data-feather="git-pull-request" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800">28</div>
+                    <div class="text-sm text-green-500 mt-2">↑ 8% from last period</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Code Reviews</h3>
+                        <i data-feather="eye" class="w-5 h-5 text-green-600"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800">45</div>
+                    <div class="text-sm text-red-500 mt-2">↓ 3% from last period</div>
+                </div>
+            </div>
+
+            <!-- Activity Chart -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h3 class="font-semibold mb-4">Activity Timeline</h3>
+                <div class="h-80">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h3 class="font-semibold mb-4">Recent Activity</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-3 border border-gray-100 rounded-lg">
+                        <div class="bg-green-100 p-2 rounded-full">
+                            <i data-feather="git-commit" class="w-4 h-4 text-green-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">Pushed 3 commits to feature/auth-middleware</p>
+                            <p class="text-sm text-gray-500">2 hours ago</p>
+                        </div>
+                        <span class="text-sm text-gray-500">main-repo</span>
+                    </div>
+                    <div class="flex items-center space-x-4 p-3 border border-gray-100 rounded-lg">
+                        <div class="bg-blue-100 p-2 rounded-full">
+                            <i data-feather="git-pull-request" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">Opened PR #42: Implement user authentication</p>
+                            <p class="text-sm text-gray-500">5 hours ago</p>
+                        </div>
+                        <span class="text-sm text-gray-500">main-repo</span>
+                    </div>
+                    <div class="flex items-center space-x-4 p-3 border border-gray-100 rounded-lg">
+                        <div class="bg-purple-100 p-2 rounded-full">
+                            <i data-feather="message-square" class="w-4 h-4 text-purple-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">Commented on PR #38: Database optimization</p>
+                            <p class="text-sm text-gray-500">1 day ago</p>
+                        </div>
+                        <span class="text-sm text-gray-500">backend-repo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // Activity Chart
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'Commits',
+                        data: [12, 19, 15, 22, 18, 8, 5],
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'PRs',
+                        data: [3, 5, 4, 6, 7, 2, 1],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Dark mode is now handled by DarkModeManager
+        // Listen for theme changes to update activity chart colors
+        window.addEventListener('themeChanged', (e) => {
+            console.log('Theme changed to:', e.detail.theme);
+            
+            // Update activity chart colors for theme
+            const activityChart = Chart.getChart('activityChart');
+            if (activityChart && window.darkModeManager) {
+                const colors = window.darkModeManager.getChartColors();
+                
+                // Update chart options for theme
+                activityChart.options.scales.x.grid.color = colors.grid;
+                activityChart.options.scales.y.grid.color = colors.grid;
+                activityChart.options.scales.x.ticks.color = colors.text;
+                activityChart.options.scales.y.ticks.color = colors.text;
+                
+                activityChart.update();
+            }
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Refresh button functionality
+        document.querySelectorAll('button:has([data-feather="refresh-cw"])').forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('spin');
+                setTimeout(() => {
+                    icon.classList.remove('spin');
+                    // Add fade-in animation to content
+                    document.querySelectorAll('.stat-card, .bg-white').forEach(el => {
+                        el.classList.add('fade-in');
+                        setTimeout(() => el.classList.remove('fade-in'), 500);
+                    });
+                }, 1000);
+            });
+        });
+
+        // Highlight active sidebar link
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+
+        // Time range update functionality
+        function updateTimeRange(range) {
+            alert(`Time range changed to: ${range} days. This will be enhanced in Phase 2.`);
+        }
+
+        // Initialize Help System
+        let helpSystem;
+        try {
+            helpSystem = new HelpSystem();
+            
+            // Register page-specific tour for code activity page
+            helpSystem.registerTour('code-activity-analysis', {
+                name: 'Code Activity Analysis',
+                description: 'Understand your coding patterns and productivity metrics',
+                steps: [
+                    {
+                        element: '.grid.grid-cols-1.md\\:grid-cols-3',
+                        title: 'Activity Statistics',
+                        content: 'Monitor your commits, pull requests, and code review activity. These metrics help track your development productivity.',
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#activityChart',
+                        title: 'Activity Timeline',
+                        content: 'Visualize your daily coding activity patterns. The chart shows commits and PRs over time to help identify trends.',
+                        position: 'top'
+                    },
+                    {
+                        element: '.space-y-4',
+                        title: 'Recent Activity Feed',
+                        content: 'Stay updated with your recent commits, PR activities, and code reviews. Click on items for detailed views.',
+                        position: 'left'
+                    },
+                    {
+                        element: 'select',
+                        title: 'Time Range Filter',
+                        content: 'Change the time period to analyze different ranges of your coding activity.',
+                        position: 'bottom'
+                    }
+                ]
+            });
+            
+            // Add keyboard shortcut for help
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F1') {
+                    e.preventDefault();
+                    helpSystem.toggleHelpPanel();
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error initializing help system:', error);
+        }
+
+        // Close mobile menu when clicking sidebar links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        });
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

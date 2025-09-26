@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Data - EngineerPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/help-system.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/performance-monitor.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">EngineerPulse</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation">12</span>
+                </a>
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="trello" class="w-5 h-5"></i>
+                    <span>Project Tasks</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium mb-3 text-gray-900">Connection Status</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">GitHub</span>
+                        </div>
+                        <span class="text-xs text-green-600">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Jira</span>
+                        </div>
+                        <span class="text-xs text-green-600">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Sheets</span>
+                        </div>
+                        <span class="text-xs text-green-600">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <span class="text-sm text-gray-700">Slack</span>
+                        </div>
+                        <span class="text-xs text-gray-500">Offline</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Add Data</h1>
+            <button class="bg-indigo-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Refresh</span>
+            </button>
+        </header>
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block bg-indigo-600 text-white shadow-md">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">Add Data Sources</h1>
+                    <p class="text-indigo-200">Connect your tools to automatically sync productivity metrics</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded-md flex items-center transition-colors duration-200">
+                        <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                        <span>Refresh</span>
+                    </button>
+                    <div class="relative group">
+                        <img src="http://static.photos/people/200x200/42" alt="User" class="w-8 h-8 rounded-full cursor-pointer">
+                        <div class="absolute right-0 bottom-0 bg-green-500 rounded-full w-3 h-3 border-2 border-white"></div>
+                        <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20">
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Notifications</a>
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <div class="border-t my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-3">
+                    <span class="text-sm text-gray-500">Connected: 3/8 sources</span>
+                    <div class="w-32 bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: 37.5%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Setup Guide -->
+            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start space-x-3">
+                    <i data-feather="info" class="w-5 h-5 text-indigo-600 mt-0.5"></i>
+                    <div>
+                        <h3 class="font-medium text-indigo-900">Quick Setup Tip</h3>
+                        <p class="text-sm text-indigo-700 mt-1">Start by connecting GitHub for code metrics, then add Jira for task tracking. This will give you the most comprehensive productivity insights.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Source Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- GitHub -->
+                <div class="data-source-card border-2 border-green-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i data-feather="github" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">GitHub</h3>
+                                <span class="text-sm text-green-600">Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full pulse-animation"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Track commits, pull requests, and code reviews from your repositories. Synced 142 commits this week.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-green-600 text-white py-2 rounded-md text-sm hover:bg-green-700 transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="settings" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Jira -->
+                <div class="data-source-card border-2 border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i data-feather="trello" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Jira</h3>
+                                <span class="text-sm text-blue-600">Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-blue-500 rounded-full pulse-animation"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Sync project tasks, sprints, and issue tracking data. Currently tracking 24 active tasks.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-blue-600 text-white py-2 rounded-md text-sm hover:bg-blue-700 transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="settings" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Google Sheets -->
+                <div class="data-source-card border-2 border-green-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i data-feather="file-text" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Google Sheets</h3>
+                                <span class="text-sm text-green-600">Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full pulse-animation"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Import custom metrics and data from your spreadsheets. 5 custom metrics imported.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-green-600 text-white py-2 rounded-md text-sm hover:bg-green-700 transition-colors">
+                            Configure
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="settings" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confluence -->
+                <div class="data-source-card border-2 border-gray-300 hover:border-indigo-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-gray-100 p-3 rounded-full">
+                                <i data-feather="book" class="w-6 h-6 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Confluence</h3>
+                                <span class="text-sm text-gray-600">Not Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Track documentation activity and knowledge sharing metrics across your team.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="help-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slack -->
+                <div class="data-source-card border-2 border-gray-300 hover:border-indigo-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-gray-100 p-3 rounded-full">
+                                <i data-feather="message-circle" class="w-6 h-6 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Slack</h3>
+                                <span class="text-sm text-gray-600">Not Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Monitor team communication and collaboration metrics from your Slack workspace.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="help-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Azure DevOps -->
+                <div class="data-source-card border-2 border-gray-300 hover:border-indigo-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-gray-100 p-3 rounded-full">
+                                <i data-feather="cloud" class="w-6 h-6 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Azure DevOps</h3>
+                                <span class="text-sm text-gray-600">Not Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Sync with Azure Boards, Repos, and Pipelines for comprehensive DevOps metrics.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="help-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Linear -->
+                <div class="data-source-card border-2 border-gray-300 hover:border-indigo-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-gray-100 p-3 rounded-full">
+                                <i data-feather="zap" class="w-6 h-6 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Linear</h3>
+                                <span class="text-sm text-gray-600">Not Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Connect Linear for modern issue tracking and project management insights.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="help-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GitLab -->
+                <div class="data-source-card border-2 border-gray-300 hover:border-indigo-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-gray-100 p-3 rounded-full">
+                                <i data-feather="gitlab" class="w-6 h-6 text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">GitLab</h3>
+                                <span class="text-sm text-gray-600">Not Connected</span>
+                            </div>
+                        </div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Integrate with GitLab for complete DevOps lifecycle metrics and CI/CD insights.</p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-indigo-600 text-white py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                            Connect
+                        </button>
+                        <button class="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                            <i data-feather="help-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Data Entry -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-lg">Manual Data Entry</h3>
+                    <button class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
+                        <i data-feather="help-circle" class="w-4 h-4 mr-1"></i>
+                        <span>Help</span>
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600 mb-6">Add custom metrics or data points manually if you don't have an integrated data source.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
+                        <i data-feather="plus" class="w-8 h-8 text-gray-400 mx-auto mb-3"></i>
+                        <p class="text-sm font-medium mb-1">Add Custom Metric</p>
+                        <p class="text-xs text-gray-500">Create a new custom metric to track</p>
+                    </div>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
+                        <i data-feather="upload" class="w-8 h-8 text-gray-400 mx-auto mb-3"></i>
+                        <p class="text-sm font-medium mb-1">Import CSV File</p>
+                        <p class="text-xs text-gray-500">Upload data from a CSV file</p>
+                    </div>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer">
+                        <i data-feather="link" class="w-8 h-8 text-gray-400 mx-auto mb-3"></i>
+                        <p class="text-sm font-medium mb-1">API Integration</p>
+                        <p class="text-xs text-gray-500">Connect via custom API endpoint</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h3 class="font-semibold mb-4">Recent Data Activity</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div class="bg-green-500 p-2 rounded-full">
+                            <i data-feather="check" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">GitHub sync completed</p>
+                            <p class="text-xs text-gray-500">142 commits and 12 PRs synced • 5 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="bg-blue-500 p-2 rounded-full">
+                            <i data-feather="refresh-cw" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Jira data refreshed</p>
+                            <p class="text-xs text-gray-500">24 tasks updated from Sprint 12 • 12 minutes ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div class="bg-green-500 p-2 rounded-full">
+                            <i data-feather="upload" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium">Custom metrics imported</p>
+                            <p class="text-xs text-gray-500">5 custom metrics from Google Sheets • 1 hour ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Refresh button functionality
+        document.querySelectorAll('button:has([data-feather="refresh-cw"])').forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('spin');
+                setTimeout(() => {
+                    icon.classList.remove('spin');
+                    // Add fade-in animation to content
+                    document.querySelectorAll('.data-source-card').forEach(el => {
+                        el.classList.add('fade-in');
+                        setTimeout(() => el.classList.remove('fade-in'), 500);
+                    });
+                }, 1000);
+            });
+        });
+
+        // Close mobile menu when clicking sidebar links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        });
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
+
+        // Highlight active sidebar link
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+
+        // Data source interaction handlers
+        document.querySelectorAll('.data-source-card button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const serviceName = this.closest('.data-source-card').querySelector('h3').textContent;
+                if (this.textContent.includes('Connect')) {
+                    alert(`Opening ${serviceName} connection setup. This will be implemented in Phase 2.`);
+                } else if (this.textContent.includes('Configure')) {
+                    alert(`Opening ${serviceName} configuration. This will be implemented in Phase 2.`);
+                }
+            });
+        });
+
+        // Manual data entry handlers
+        document.querySelectorAll('.border-dashed').forEach(card => {
+            card.addEventListener('click', function() {
+                const type = this.querySelector('p').textContent;
+                alert(`Opening ${type} interface. This will be implemented in Phase 2.`);
+            });
+        });
+    </script>
+</body>
+</html>

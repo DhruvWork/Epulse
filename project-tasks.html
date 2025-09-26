@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tasks - EngineerPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/timetracker.js"></script>
+    <script src="js/timetracker-widget.js"></script>
+    <script src="js/collaboration-manager.js"></script>
+    <script src="js/collaboration-widget.js"></script>
+    <script src="js/search-filter-manager.js"></script>
+    <script src="js/search-widget.js"></script>
+    <script src="js/drag-drop-manager.js"></script>
+    <script src="js/help-system.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/performance-monitor.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">EngineerPulse</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation">12</span>
+                </a>
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                    <i data-feather="trello" class="w-5 h-5"></i>
+                    <span>Project Tasks</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Time Tracker Widget -->
+            <div class="mt-6">
+                <div id="timeTrackerContainer"></div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium mb-3 text-gray-900">Quick Filters</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                        <span class="text-sm text-gray-700">Current Sprint</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span class="text-sm text-gray-700">High Priority</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-sm text-gray-700">My Tasks</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-sm text-gray-700">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition-colors mb-2">
+                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                <span>New Task</span>
+            </button>
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Project Tasks</h1>
+            <button class="bg-indigo-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Refresh</span>
+            </button>
+        </header>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6">
+            <!-- Page Header -->
+            <div class="hidden md:flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Project Tasks</h1>
+                    <p class="text-gray-600 mt-1">Manage your project tasks with our Kanban board</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <select class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option>All Projects</option>
+                        <option>Frontend Project</option>
+                        <option>Backend API</option>
+                        <option>Mobile App</option>
+                    </select>
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                        <i data-feather="refresh-cw" class="w-4 h-4 mr-2"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Page Header -->
+            <div class="md:hidden mb-4">
+                <p class="text-gray-600 text-sm">Manage your project tasks with our Kanban board</p>
+                <div class="mt-3 flex items-center space-x-3">
+                    <select class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option>All Projects</option>
+                        <option>Frontend Project</option>
+                        <option>Backend API</option>
+                        <option>Mobile App</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Sprint Info -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold text-lg">Sprint 12 - Authentication & Security</h3>
+                        <p class="text-gray-600 text-sm">Dec 18, 2024 - Jan 1, 2025</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Progress</p>
+                            <p class="font-semibold">15 / 18 tasks</p>
+                        </div>
+                        <div class="w-24">
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-indigo-500" style="width: 83%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Backlog Column -->
+                <div class="kanban-column">
+                    <div class="bg-gray-100 rounded-t-lg p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-700">BACKLOG</h3>
+                            <span class="text-sm text-gray-500 bg-gray-200 px-2 py-1 rounded-full">8</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-b-lg p-3 space-y-3 min-h-96">
+                        <div class="task-card" data-task-id="RES-15" data-task-name="Research new authentication library">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Research new authentication library</span>
+                                <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded priority-low">Low</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">RES-15</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Created 5d ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">0h 0m</div>
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full border-2 border-white"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card" data-task-id="DOC-22" data-task-name="Update API documentation">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Update API documentation</span>
+                                <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded priority-low">Low</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">DOC-22</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Created 3d ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">0h 0m</div>
+                                    <img src="http://static.photos/people/200x200/44" class="w-6 h-6 rounded-full border-2 border-white" alt="Team member">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- To Do Column -->
+                <div class="kanban-column">
+                    <div class="bg-blue-100 rounded-t-lg p-4 border-b border-blue-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-blue-700">TO DO</h3>
+                            <span class="text-sm text-blue-600 bg-blue-200 px-2 py-1 rounded-full">6</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-b-lg p-3 space-y-3 min-h-96">
+                        <div class="task-card" data-task-id="API-42" data-task-name="Implement auth middleware">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Implement auth middleware</span>
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded priority-high">High</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">API-42</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Created 2d ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">0h 0m</div>
+                                    <img src="http://static.photos/people/200x200/43" class="w-6 h-6 rounded-full border-2 border-white" alt="Sarah">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card" data-task-id="UI-17" data-task-name="Fix login page layout">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Fix login page layout</span>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded priority-medium">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">UI-17</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Created 1d ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">2h 15m</div>
+                                    <img src="http://static.photos/people/200x200/42" class="w-6 h-6 rounded-full border-2 border-white" alt="You">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card" data-task-id="SEC-09" data-task-name="Setup password validation">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Setup password validation</span>
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded priority-high">High</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">SEC-09</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Created today</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">0h 0m</div>
+                                    <img src="http://static.photos/people/200x200/45" class="w-6 h-6 rounded-full border-2 border-white" alt="Mike">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="kanban-column">
+                    <div class="bg-yellow-100 rounded-t-lg p-4 border-b border-yellow-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-yellow-700">IN PROGRESS</h3>
+                            <span class="text-sm text-yellow-600 bg-yellow-200 px-2 py-1 rounded-full">3</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-b-lg p-3 space-y-3 min-h-96">
+                        <div class="task-card border-l-4 border-yellow-400" data-task-id="PERF-8" data-task-name="Optimize database queries">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Optimize database queries</span>
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded priority-high">High</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">PERF-8</p>
+                            <div class="mb-3">
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>Progress</span>
+                                    <span>65%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-yellow-500" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Started 1d ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500">4h 32m</div>
+                                    <img src="http://static.photos/people/200x200/42" class="w-6 h-6 rounded-full border-2 border-white" alt="You">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card border-l-4 border-yellow-400" data-task-id="AUTH-15" data-task-name="Implement JWT tokens">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Implement JWT tokens</span>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded priority-medium">Medium</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">AUTH-15</p>
+                            <div class="mb-3">
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>Progress</span>
+                                    <span>30%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-yellow-500" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-400">Started 3h ago</span>
+                                    <button class="start-timer-btn text-xs text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <i data-feather="play-circle" class="w-3 h-3 mr-1"></i>
+                                        Track
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="task-time-display text-xs text-gray-500 hidden">1h 45m</div>
+                                    <img src="http://static.photos/people/200x200/43" class="w-6 h-6 rounded-full border-2 border-white" alt="Sarah">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Done Column -->
+                <div class="kanban-column">
+                    <div class="bg-green-100 rounded-t-lg p-4 border-b border-green-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-green-700">DONE</h3>
+                            <span class="text-sm text-green-600 bg-green-200 px-2 py-1 rounded-full">7</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-b-lg p-3 space-y-3 min-h-96">
+                        <div class="task-card bg-green-50 border-l-4 border-green-400">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Setup CI/CD pipeline</span>
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded status-completed">Completed</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">DEV-33</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Completed today</span>
+                                <div class="flex -space-x-1">
+                                    <img src="http://static.photos/people/200x200/42" class="w-6 h-6 rounded-full border-2 border-white" alt="You">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-card bg-green-50 border-l-4 border-green-400">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Create user registration endpoint</span>
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded status-completed">Completed</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">API-28</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Completed yesterday</span>
+                                <div class="flex -space-x-1">
+                                    <img src="http://static.photos/people/200x200/45" class="w-6 h-6 rounded-full border-2 border-white" alt="Mike">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card bg-green-50 border-l-4 border-green-400">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-medium">Design login mockups</span>
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded status-completed">Completed</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-3">UI-12</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">Completed 2d ago</span>
+                                <div class="flex -space-x-1">
+                                    <img src="http://static.photos/people/200x200/46" class="w-6 h-6 rounded-full border-2 border-white" alt="Lisa">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="mt-8">
+                <div id="searchWidget"></div>
+            </div>
+
+            <!-- Collaboration Section -->
+            <div class="mt-8">
+                <div id="collaborationWidget"></div>
+            </div>
+        </div>
+    </main>
+
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Refresh button functionality
+        document.querySelectorAll('button:has([data-feather="refresh-cw"])').forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('spin');
+                setTimeout(() => {
+                    icon.classList.remove('spin');
+                    // Add fade-in animation to content
+                    document.querySelectorAll('.task-card, .kanban-column').forEach(el => {
+                        el.classList.add('fade-in');
+                        setTimeout(() => el.classList.remove('fade-in'), 500);
+                    });
+                }, 1000);
+            });
+        });
+
+        // Highlight active sidebar link
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+
+        // Add task functionality (placeholder) - Updated to work with sidebar button
+        document.querySelectorAll('button:has([data-feather="plus"])').forEach(button => {
+            button.addEventListener('click', function() {
+                alert('New task modal would open here. This will be implemented in Phase 2.');
+            });
+        });
+
+        // Initialize Time Tracker
+        const timeTracker = new TimeTracker();
+        const timeTrackerContainer = document.getElementById('timeTrackerContainer');
+        const timeTrackerWidget = new TimeTrackerWidget(timeTrackerContainer, timeTracker);
+
+        // Update task time displays
+        function updateTaskTimeDisplays() {
+            document.querySelectorAll('.task-card').forEach(card => {
+                const taskId = card.dataset.taskId;
+                if (taskId) {
+                    const timeInfo = timeTracker.getTotalTimeForTask(taskId);
+                    const timeDisplay = card.querySelector('.task-time-display');
+                    if (timeDisplay && timeInfo.duration > 0) {
+                        timeDisplay.textContent = timeInfo.formatted;
+                        timeDisplay.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+
+        // Start timer buttons
+        document.querySelectorAll('.start-timer-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const card = this.closest('.task-card');
+                const taskId = card.dataset.taskId;
+                const taskName = card.dataset.taskName;
+                
+                if (taskId && taskName) {
+                    timeTrackerWidget.startTracking(taskId, taskName);
+                }
+            });
+        });
+
+        // Task card click handlers
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on timer button
+                if (e.target.closest('.start-timer-btn')) {
+                    return;
+                }
+                
+                e.preventDefault();
+                const taskId = this.querySelector('p').textContent;
+                alert(`Task details for ${taskId} would open here. This will be implemented in Phase 2.`);
+            });
+        });
+
+        // Update time displays on page load
+        updateTaskTimeDisplays();
+
+        // Update time displays when sessions complete
+        timeTracker.on('onStop', () => {
+            setTimeout(updateTaskTimeDisplays, 100);
+        });
+
+        // Initialize Collaboration System
+        let collaborationManager, collaborationWidget;
+        
+        try {
+            // Initialize the collaboration manager
+            collaborationManager = new CollaborationManager();
+            
+            // Initialize the collaboration widget for project tasks
+            const collaborationContainer = document.getElementById('collaborationWidget');
+            if (collaborationContainer) {
+                collaborationWidget = new CollaborationWidget(
+                    collaborationContainer,
+                    collaborationManager,
+                    'project',
+                    'sprint-12-auth-security'
+                );
+
+                // Create some sample comments if none exist
+                const existingComments = collaborationManager.getComments('project', 'sprint-12-auth-security');
+                if (existingComments.length === 0) {
+                    // Sample project comments
+                    collaborationManager.addComment(
+                        'project',
+                        'sprint-12-auth-security',
+                        'Great progress on the authentication sprint! The middleware implementation is looking solid. @sarah.chen can you review the JWT implementation when you have a chance?'
+                    );
+
+                    collaborationManager.addComment(
+                        'project',
+                        'sprint-12-auth-security',
+                        'I noticed we might want to add rate limiting to the auth endpoints. What do you think @mike.rodriguez?'
+                    );
+
+                    collaborationManager.addComment(
+                        'project',
+                        'sprint-12-auth-security',
+                        '@alex.johnson Absolutely! I can implement rate limiting as part of the middleware. Should be straightforward with express-rate-limit.'
+                    );
+                }
+
+                // Add some task-specific comments
+                const taskComments = collaborationManager.getComments('task', 'PERF-8');
+                if (taskComments.length === 0) {
+                    collaborationManager.addComment(
+                        'task',
+                        'PERF-8',
+                        'Working on optimizing the user queries. Found a few N+1 queries that are causing performance issues.'
+                    );
+
+                    collaborationManager.addComment(
+                        'task',
+                        'PERF-8',
+                        'Added database indexes for the most frequent lookups. Seeing about 40% improvement in response times so far.'
+                    );
+                }
+            }
+        } catch (error) {
+            console.error('Error initializing collaboration system:', error);
+        }
+
+        // Initialize Search and Filter System
+        let searchManager, searchWidget;
+        
+        try {
+            // Initialize the search manager
+            searchManager = new SearchFilterManager();
+            
+            // Initialize the search widget
+            const searchContainer = document.getElementById('searchWidget');
+            if (searchContainer) {
+                searchWidget = new SearchWidget(searchContainer, searchManager);
+                
+                // Listen for search result clicks
+                searchContainer.addEventListener('onResultClick', (e) => {
+                    const { type, id } = e.detail;
+                    if (type === 'task') {
+                        highlightTask(id);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing search system:', error);
+        }
+
+        // Enhanced task card click handlers to include collaboration and search
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on timer button
+                if (e.target.closest('.start-timer-btn')) {
+                    return;
+                }
+                
+                e.preventDefault();
+                const taskId = this.dataset.taskId;
+                const taskName = this.dataset.taskName;
+                
+                if (taskId && collaborationWidget) {
+                    // Switch collaboration widget to show this specific task's comments
+                    collaborationWidget.entityType = 'task';
+                    collaborationWidget.entityId = taskId;
+                    collaborationWidget.refreshView();
+                    
+                    // Scroll to collaboration section
+                    document.getElementById('collaborationWidget').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    alert(`Task details for ${taskId} would open here. This will be implemented in Phase 2.`);
+                }
+            });
+        });
+
+        // Task highlighting function
+        function highlightTask(taskId) {
+            // Remove existing highlights
+            document.querySelectorAll('.task-card.highlight').forEach(card => {
+                card.classList.remove('highlight');
+            });
+
+            // Find and highlight the task
+            const taskCard = document.querySelector(`.task-card[data-task-id="${taskId}"]`);
+            if (taskCard) {
+                taskCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                taskCard.classList.add('highlight');
+                setTimeout(() => taskCard.classList.remove('highlight'), 3000);
+            }
+        }
+
+        // Global search shortcut (Ctrl/Cmd + K)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const searchInput = document.querySelector('#searchWidget input[type="text"]');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+        });
+
+        // Initialize Drag and Drop System
+        let dragDropManager;
+        
+        try {
+            // Initialize the drag and drop manager
+            dragDropManager = new DragDropManager();
+            
+            // Set up event listeners for drag and drop events
+            dragDropManager.on('onTaskMoved', (data) => {
+                console.log(`Task ${data.taskId} moved to ${data.newStatus}`);
+                
+                // Update column counts
+                updateColumnCounts();
+                
+                // Update any dependent systems
+                if (collaborationManager) {
+                    collaborationManager.addComment(
+                        'task',
+                        data.taskId,
+                        `Task moved to ${data.newStatus} column${data.method === 'keyboard' ? ' (via keyboard)' : ''}`
+                    );
+                }
+                
+                // Update search index if search manager exists
+                if (searchManager) {
+                    searchManager.refreshIndex();
+                }
+            });
+            
+            dragDropManager.on('onDragStart', (data) => {
+                // Add visual feedback to the page during drag
+                document.body.classList.add('dragging-active');
+            });
+            
+            dragDropManager.on('onDragEnd', (data) => {
+                // Remove visual feedback
+                document.body.classList.remove('dragging-active');
+            });
+            
+            // Function to update column counts
+            function updateColumnCounts() {
+                document.querySelectorAll('.kanban-column').forEach(column => {
+                    const header = column.querySelector('h3').parentElement;
+                    const countSpan = header.querySelector('span');
+                    const tasks = column.querySelectorAll('.task-card');
+                    
+                    if (countSpan) {
+                        countSpan.textContent = tasks.length;
+                    }
+                });
+            }
+            
+            // Add keyboard navigation instructions
+            const kanbanBoard = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-4');
+            if (kanbanBoard) {
+                // Add accessibility instructions
+                const instructions = document.createElement('div');
+                instructions.className = 'sr-only';
+                instructions.innerHTML = `
+                    <p>Use arrow keys to move tasks between columns. Press Enter or Space to see movement options.</p>
+                    <p>Use Tab to navigate between tasks, Shift+Tab to go backwards.</p>
+                `;
+                kanbanBoard.insertBefore(instructions, kanbanBoard.firstChild);
+            }
+            
+            // Enhanced keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Escape key to cancel any drag operation
+                if (e.key === 'Escape' && dragDropManager.isDragging) {
+                    e.preventDefault();
+                    // The drag drop manager will handle cleanup
+                }
+                
+                // Alt + arrow keys for quick column navigation
+                if (e.altKey && ['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                    const focusedTask = document.activeElement;
+                    if (focusedTask && focusedTask.classList.contains('task-card')) {
+                        const currentColumn = focusedTask.closest('.kanban-column');
+                        let targetColumn;
+                        
+                        if (e.key === 'ArrowLeft') {
+                            targetColumn = currentColumn.previousElementSibling;
+                        } else {
+                            targetColumn = currentColumn.nextElementSibling;
+                        }
+                        
+                        if (targetColumn && targetColumn.classList.contains('kanban-column')) {
+                            dragDropManager.moveTaskToColumnKeyboard(focusedTask, targetColumn);
+                        }
+                    }
+                }
+            });
+            
+            // Add drag instructions to the UI
+            const headerSection = document.querySelector('.flex.justify-between.items-center.mb-6');
+            if (headerSection) {
+                const dragInstructions = document.createElement('div');
+                dragInstructions.className = 'text-sm text-gray-600 mt-2';
+                dragInstructions.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <span class="flex items-center">
+                            <i data-feather="move" class="w-4 h-4 mr-1"></i>
+                            Drag tasks between columns
+                        </span>
+                        <span class="flex items-center">
+                            <kbd class="search-shortcut">Alt + ←/→</kbd>
+                            <span class="ml-1">Quick move</span>
+                        </span>
+                        <span class="flex items-center">
+                            <kbd class="search-shortcut">Enter</kbd>
+                            <span class="ml-1">Move options</span>
+                        </span>
+                    </div>
+                `;
+                headerSection.parentNode.insertBefore(dragInstructions, headerSection.nextSibling);
+                feather.replace();
+            }
+            
+        } catch (error) {
+            console.error('Error initializing drag and drop system:', error);
+            // Gracefully degrade - show a notification that drag and drop is not available
+            const notification = document.createElement('div');
+            notification.className = 'bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-4';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i data-feather="alert-triangle" class="w-5 h-5 mr-2"></i>
+                    <span>Drag and drop functionality is currently unavailable. You can still use keyboard shortcuts to move tasks.</span>
+                </div>
+            `;
+            
+            const contentContainer = document.querySelector('.flex-1');
+            if (contentContainer && contentContainer.firstElementChild) {
+                contentContainer.insertBefore(notification, contentContainer.firstElementChild);
+                feather.replace();
+            }
+        }
+
+        // Initialize Help System
+        let helpSystem;
+        
+        try {
+            helpSystem = new HelpSystem();
+            
+            // Register page-specific tour steps for tasks page
+            helpSystem.registerTour('tasks-advanced', {
+                name: 'Advanced Task Management',
+                description: 'Master advanced task management features',
+                steps: [
+                    {
+                        element: '.kanban-column',
+                        title: 'Kanban Board Layout',
+                        content: 'Tasks flow from left to right through different stages. Each column represents a stage in your workflow.',
+                        position: 'bottom'
+                    },
+                    {
+                        element: '.task-card[data-task-id="PERF-8"]',
+                        title: 'Task Details',
+                        content: 'Click on any task card to view detailed information and add comments. The colored border indicates task status.',
+                        position: 'right'
+                    },
+                    {
+                        element: '.start-timer-btn',
+                        title: 'Time Tracking Integration',
+                        content: 'Track time spent on tasks by clicking the "Track" button. Your productivity metrics will be automatically updated.',
+                        position: 'top'
+                    },
+                    {
+                        element: '#searchWidget',
+                        title: 'Search & Filter',
+                        content: 'Quickly find tasks using the search widget. Use filters to narrow down results by status, assignee, or priority.',
+                        position: 'top'
+                    },
+                    {
+                        element: '#collaborationWidget',
+                        title: 'Team Collaboration',
+                        content: 'View and participate in team discussions. Add comments, mention team members, and track project activity.',
+                        position: 'top'
+                    }
+                ]
+            });
+            
+            // Add keyboard shortcut for help
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F1') {
+                    e.preventDefault();
+                    helpSystem.toggleHelpPanel();
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error initializing help system:', error);
+        }
+    </script>
+</body>
+</html>
