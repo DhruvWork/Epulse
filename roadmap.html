@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Roadmap - EngineerPulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Roadmap-specific styles */
+        .roadmap-timeline {
+            position: relative;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #06d6a0);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .timeline-item {
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-8px);
+        }
+        
+        .timeline-milestone {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-milestone.completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .timeline-milestone.in-progress {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .priority-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+        
+        .priority-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .priority-high {
+            border-left: 6px solid #ef4444;
+        }
+        
+        .priority-medium {
+            border-left: 6px solid #f59e0b;
+        }
+        
+        .priority-low {
+            border-left: 6px solid #10b981;
+        }
+        
+        .view-tab {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .view-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .view-tab:hover::before {
+            left: 100%;
+        }
+        
+        .roadmap-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+        
+        .quarter-timeline {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quarter-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+        
+        .milestone-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .milestone-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .milestone-card.q1 { border-left-color: #6366f1; }
+        .milestone-card.q2 { border-left-color: #8b5cf6; }
+        .milestone-card.q3 { border-left-color: #06d6a0; }
+        .milestone-card.q4 { border-left-color: #f59e0b; }
+        
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+        
+        .progress-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+        
+        .progress-ring .bg {
+            stroke: #e5e7eb;
+        }
+        
+        .progress-ring .progress {
+            stroke: url(#gradient);
+            stroke-dasharray: 0 999;
+            transition: stroke-dasharray 1s ease-in-out;
+        }
+        
+        .short-term-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .short-term-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        
+        .short-term-item:hover::before {
+            width: 8px;
+        }
+        
+        .short-term-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .roadmap-stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-left {
+            animation: slideInFromLeft 0.6s ease-out;
+        }
+        
+        .animate-slide-right {
+            animation: slideInFromRight 0.6s ease-out;
+        }
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @media (max-width: 768px) {
+            .roadmap-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .quarter-timeline {
+                padding: 1rem;
+            }
+            
+            .roadmap-timeline {
+                padding: 1rem 0;
+            }
+            
+            .priority-card {
+                margin-bottom: 1rem;
+            }
+            
+            .progress-ring {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        
+        /* Dark mode adjustments */
+        .dark-mode .priority-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        .dark-mode .quarter-timeline {
+            background: linear-gradient(135deg, #1f2937, #111827);
+        }
+        
+        .dark-mode .milestone-card,
+        .dark-mode .short-term-item {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        
+        .dark-mode .timeline-milestone {
+            border-color: #1f2937;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/navigation-manager.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">EngineerPulse</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation">12</span>
+                </a>
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="trello" class="w-5 h-5"></i>
+                    <span>Project Tasks</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
+                </a>
+                <a href="roadmap.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                    <i data-feather="map" class="w-5 h-5"></i>
+                    <span>Roadmap</span>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium mb-3 text-gray-900">Quick Filters</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                        <span class="text-sm text-gray-700">Current Sprint</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-sm text-gray-700">High Priority</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-sm text-gray-700">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button onclick="window.navigationManager?.showNavigationMenu()"
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition-colors mb-2"
+                    title="Quick Navigation (Ctrl+Shift+N)">
+                <i data-feather="compass" class="w-4 h-4 mr-2"></i>
+                <span>Navigate</span>
+            </button>
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Strategic Roadmap</h1>
+            <button class="bg-indigo-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                <i data-feather="plus" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Add Goal</span>
+            </button>
+        </header>
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block bg-indigo-600 text-white shadow-md">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">Strategic Roadmap</h1>
+                    <p class="text-indigo-200">Long-term planning and milestone tracking</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded-md flex items-center transition-colors duration-200">
+                        <i data-feather="plus" class="w-4 h-4 mr-1"></i>
+                        <span>Add Goal</span>
+                    </button>
+                    <div class="relative group">
+                        <img src="http://static.photos/people/200x200/42" alt="User" class="w-8 h-8 rounded-full cursor-pointer">
+                        <div class="absolute right-0 bottom-0 bg-green-500 rounded-full w-3 h-3 border-2 border-white"></div>
+                        <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20">
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Notifications</a>
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <div class="border-t my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6 md:pt-6">
+            <!-- Roadmap Stats -->
+            <div class="roadmap-stats animate-fade-up">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="stat-item">
+                        <div class="text-3xl font-bold mb-1">12</div>
+                        <div class="text-sm opacity-90">Active Goals</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="text-3xl font-bold mb-1">68%</div>
+                        <div class="text-sm opacity-90">Completion Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="text-3xl font-bold mb-1">24</div>
+                        <div class="text-sm opacity-90">Milestones</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="text-3xl font-bold mb-1">Q2</div>
+                        <div class="text-sm opacity-90">Current Quarter</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6 animate-slide-left">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchView('yearly')" class="view-tab px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium transition-all hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" id="yearly-tab">
+                        <i data-feather="calendar" class="w-4 h-4 inline mr-2"></i>
+                        Yearly View
+                    </button>
+                    <button onclick="switchView('quarterly')" class="view-tab px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" id="quarterly-tab">
+                        <i data-feather="layers" class="w-4 h-4 inline mr-2"></i>
+                        Quarterly View
+                    </button>
+                    <button onclick="switchView('short-term')" class="view-tab px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" id="short-term-tab">
+                        <i data-feather="clock" class="w-4 h-4 inline mr-2"></i>
+                        Short-term View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Yearly View -->
+            <div id="yearly-view" class="roadmap-view animate-slide-right">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">2024 Strategic Priorities</h2>
+                
+                <!-- Timeline Visualization -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Year Timeline</h3>
+                    <div class="roadmap-timeline py-8 px-4">
+                        <div class="timeline-line"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="timeline-item text-center">
+                                <div class="timeline-milestone completed mx-auto mb-3"></div>
+                                <div class="text-sm font-medium text-gray-900">Q1</div>
+                                <div class="text-xs text-gray-500">Architecture</div>
+                            </div>
+                            <div class="timeline-item text-center">
+                                <div class="timeline-milestone in-progress mx-auto mb-3"></div>
+                                <div class="text-sm font-medium text-gray-900">Q2</div>
+                                <div class="text-xs text-gray-500">Development</div>
+                            </div>
+                            <div class="timeline-item text-center">
+                                <div class="timeline-milestone mx-auto mb-3"></div>
+                                <div class="text-sm font-medium text-gray-900">Q3</div>
+                                <div class="text-xs text-gray-500">Testing</div>
+                            </div>
+                            <div class="timeline-item text-center">
+                                <div class="timeline-milestone mx-auto mb-3"></div>
+                                <div class="text-sm font-medium text-gray-900">Q4</div>
+                                <div class="text-xs text-gray-500">Launch</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Priorities -->
+                <div class="roadmap-grid">
+                    <div class="priority-card priority-high rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i data-feather="target" class="w-6 h-6 text-red-500"></i>
+                                <h3 class="text-lg font-semibold text-gray-900">Platform Modernization</h3>
+                            </div>
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">High Priority</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Complete migration to cloud-native architecture and implement microservices for better scalability.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 36 36">
+                                    <defs>
+                                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="bg" cx="18" cy="18" r="14"></circle>
+                                    <circle class="progress" cx="18" cy="18" r="14" stroke-dasharray="60 100"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-gray-700">60%</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Target: Q4 2024</div>
+                                <div class="text-xs text-gray-400">6 milestones remaining</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="priority-card priority-medium rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i data-feather="users" class="w-6 h-6 text-yellow-500"></i>
+                                <h3 class="text-lg font-semibold text-gray-900">Team Expansion</h3>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Medium Priority</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Scale engineering team from 8 to 15 members with focus on senior developers and DevOps specialists.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 36 36">
+                                    <circle class="bg" cx="18" cy="18" r="14"></circle>
+                                    <circle class="progress" cx="18" cy="18" r="14" stroke-dasharray="40 100" stroke="url(#gradient1)"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-gray-700">40%</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Target: Q3 2024</div>
+                                <div class="text-xs text-gray-400">3 positions filled</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="priority-card priority-low rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i data-feather="shield" class="w-6 h-6 text-green-500"></i>
+                                <h3 class="text-lg font-semibold text-gray-900">Security Enhancement</h3>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Low Priority</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Implement comprehensive security audit and upgrade authentication systems.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 36 36">
+                                    <circle class="bg" cx="18" cy="18" r="14"></circle>
+                                    <circle class="progress" cx="18" cy="18" r="14" stroke-dasharray="25 100" stroke="url(#gradient1)"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-gray-700">25%</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Target: Q4 2024</div>
+                                <div class="text-xs text-gray-400">Planning phase</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="priority-card priority-high rounded-lg p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i data-feather="zap" class="w-6 h-6 text-red-500"></i>
+                                <h3 class="text-lg font-semibold text-gray-900">Performance Optimization</h3>
+                            </div>
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">High Priority</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Achieve 50% reduction in page load times and improve overall system responsiveness.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 36 36">
+                                    <circle class="bg" cx="18" cy="18" r="14"></circle>
+                                    <circle class="progress" cx="18" cy="18" r="14" stroke-dasharray="75 100" stroke="url(#gradient1)"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-gray-700">75%</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Target: Q2 2024</div>
+                                <div class="text-xs text-gray-400">Nearly complete</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quarterly View -->
+            <div id="quarterly-view" class="roadmap-view hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Quarterly Milestones</h2>
+                
+                <div class="roadmap-grid">
+                    <div class="quarter-timeline q1">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900">Q1 2024</h3>
+                            <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">Completed</span>
+                        </div>
+                        
+                        <div class="milestone-card q1">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Infrastructure Setup</h4>
+                                <i data-feather="check-circle" class="w-5 h-5 text-green-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Complete cloud infrastructure migration and setup CI/CD pipelines</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Completed: Mar 15, 2024
+                            </div>
+                        </div>
+
+                        <div class="milestone-card q1">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Team Onboarding</h4>
+                                <i data-feather="check-circle" class="w-5 h-5 text-green-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Hire and onboard 3 senior developers</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Completed: Mar 28, 2024
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quarter-timeline q2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900">Q2 2024</h3>
+                            <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">In Progress</span>
+                        </div>
+                        
+                        <div class="milestone-card q2">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Core Platform Development</h4>
+                                <i data-feather="clock" class="w-5 h-5 text-blue-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Develop microservices architecture and API gateway</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                    Due: Jun 30, 2024
+                                </div>
+                                <div class="text-xs font-medium text-blue-600">70% Complete</div>
+                            </div>
+                        </div>
+
+                        <div class="milestone-card q2">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Performance Testing</h4>
+                                <i data-feather="trending-up" class="w-5 h-5 text-yellow-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Implement comprehensive performance testing suite</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                    Due: Jun 15, 2024
+                                </div>
+                                <div class="text-xs font-medium text-yellow-600">45% Complete</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quarter-timeline q3">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900">Q3 2024</h3>
+                            <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full">Planned</span>
+                        </div>
+                        
+                        <div class="milestone-card q3">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Beta Release</h4>
+                                <i data-feather="package" class="w-5 h-5 text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Launch beta version for internal testing</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Planned: Sep 15, 2024
+                            </div>
+                        </div>
+
+                        <div class="milestone-card q3">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Security Audit</h4>
+                                <i data-feather="shield" class="w-5 h-5 text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Complete comprehensive security audit and penetration testing</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Planned: Sep 30, 2024
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quarter-timeline q4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-900">Q4 2024</h3>
+                            <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full">Planned</span>
+                        </div>
+                        
+                        <div class="milestone-card q4">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Production Launch</h4>
+                                <i data-feather="rocket" class="w-5 h-5 text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Full production deployment and go-live</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Planned: Dec 15, 2024
+                            </div>
+                        </div>
+
+                        <div class="milestone-card q4">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">Documentation</h4>
+                                <i data-feather="book" class="w-5 h-5 text-gray-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Complete technical documentation and user guides</p>
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i data-feather="calendar" class="w-4 h-4 mr-1"></i>
+                                Planned: Dec 31, 2024
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Short-term View -->
+            <div id="short-term-view" class="roadmap-view hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Next 30 Days</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">This Week</h3>
+                        
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">API Gateway Optimization</h4>
+                                </div>
+                                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Critical</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Optimize API gateway response times and implement caching layer</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="user" class="w-4 h-4 mr-1"></i>
+                                    Assigned to: Alex Johnson
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Today</div>
+                            </div>
+                        </div>
+
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">Database Migration Testing</h4>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">High</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Run comprehensive tests on database migration scripts</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="user" class="w-4 h-4 mr-1"></i>
+                                    Assigned to: Sarah Chen
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Tomorrow</div>
+                            </div>
+                        </div>
+
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">Code Review Session</h4>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Medium</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Review microservices implementation with team</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="users" class="w-4 h-4 mr-1"></i>
+                                    Team meeting
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Friday</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Next Week</h3>
+                        
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">Security Penetration Test</h4>
+                                </div>
+                                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">High</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Conduct security testing on new authentication system</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="user" class="w-4 h-4 mr-1"></i>
+                                    Assigned to: Mike Rodriguez
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Next Monday</div>
+                            </div>
+                        </div>
+
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">Performance Benchmarking</h4>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Medium</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Establish performance benchmarks for new platform</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="user" class="w-4 h-4 mr-1"></i>
+                                    Assigned to: Emily Davis
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Next Wednesday</div>
+                            </div>
+                        </div>
+
+                        <div class="short-term-item">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                                    <h4 class="font-semibold text-gray-900">Client Demo Preparation</h4>
+                                </div>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">High</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Prepare demo environment and presentation materials</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <i data-feather="user" class="w-4 h-4 mr-1"></i>
+                                    Assigned to: Alex Johnson
+                                </div>
+                                <div class="text-xs text-gray-500">Due: Next Friday</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Deadlines -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Deadlines</h3>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
+                                <div class="flex items-center space-x-3">
+                                    <i data-feather="alert-circle" class="w-5 h-5 text-red-500"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">API Performance Review</div>
+                                        <div class="text-sm text-gray-600">Critical milestone for Q2 delivery</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-red-600">2 days left</div>
+                                    <div class="text-xs text-gray-500">June 10, 2024</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                <div class="flex items-center space-x-3">
+                                    <i data-feather="clock" class="w-5 h-5 text-yellow-500"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">Security Audit Report</div>
+                                        <div class="text-sm text-gray-600">Comprehensive security assessment</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-yellow-600">1 week left</div>
+                                    <div class="text-xs text-gray-500">June 15, 2024</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                <div class="flex items-center space-x-3">
+                                    <i data-feather="calendar" class="w-5 h-5 text-blue-500"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900">Q2 Sprint Review</div>
+                                        <div class="text-sm text-gray-600">Team retrospective and planning</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-blue-600">2 weeks left</div>
+                                    <div class="text-xs text-gray-500">June 30, 2024</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // View switching functionality
+        function switchView(view) {
+            // Hide all views
+            document.querySelectorAll('.roadmap-view').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-slide-right', 'animate-slide-left', 'animate-fade-up');
+            });
+            
+            // Reset all tabs
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('bg-indigo-600', 'text-white');
+                tab.classList.add('bg-gray-100', 'text-gray-700');
+            });
+            
+            // Show selected view with animation
+            const viewElement = document.getElementById(`${view}-view`);
+            const tabElement = document.getElementById(`${view}-tab`);
+            
+            if (viewElement && tabElement) {
+                viewElement.classList.remove('hidden');
+                viewElement.classList.add('animate-fade-up');
+                
+                tabElement.classList.remove('bg-gray-100', 'text-gray-700');
+                tabElement.classList.add('bg-indigo-600', 'text-white');
+            }
+        }
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+        
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Highlight active sidebar link
+        const currentPage = window.location.pathname.split('/').pop() || 'roadmap.html';
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+                link.classList.remove('text-gray-600', 'hover:text-indigo-600');
+                link.classList.add('text-indigo-600', 'font-medium');
+            } else {
+                link.classList.remove('active');
+                link.classList.add('text-gray-600', 'hover:text-indigo-600');
+                link.classList.remove('text-indigo-600', 'font-medium');
+            }
+        });
+
+        // Initialize progress rings
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressRings = document.querySelectorAll('.progress-ring .progress');
+            progressRings.forEach((ring, index) => {
+                const dashArray = ring.getAttribute('stroke-dasharray');
+                if (dashArray) {
+                    const [progress] = dashArray.split(' ');
+                    const circumference = 2 * Math.PI * 14;
+                    const offset = circumference - (progress / 100) * circumference;
+                    ring.style.strokeDasharray = `${circumference} ${circumference}`;
+                    ring.style.strokeDashoffset = offset;
+                }
+            });
+        });
+        
+        // Add scroll-based animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.querySelectorAll('.priority-card, .milestone-card, .short-term-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
