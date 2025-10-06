@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngineerPulse Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/charts-manager.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .kanban-column {
+            min-height: 400px;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .mobile-menu-button {
+                display: block;
+            }
+        }
+        
+        /* New enhancements */
+        .sidebar-link {
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        .sidebar-link:hover {
+            background-color: #f3f4f6;
+            transform: translateX(4px);
+        }
+        .sidebar-link.active {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .task-card {
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+        .task-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .task-card:active {
+            cursor: grabbing;
+        }
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            background-color: #e5e7eb;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .dark-mode {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        .dark-mode .bg-white {
+            background-color: #374151;
+        }
+        .dark-mode .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark-mode .text-gray-600 {
+            color: #d1d5db;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script src="js/timetracker.js"></script>
+    <script src="js/timetracker-widget.js"></script>
+    <script src="js/goals-manager.js"></script>
+    <script src="js/goals-widget.js"></script>
+    <script src="js/help-system.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/performance-monitor.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">EngineerPulse</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="map" class="w-5 h-5"></i>
+                    <span>Roadmap</span>
+                    <button class="ml-auto text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateGoalDialog(event)" title="Create new roadmap goal">
+                        <i data-feather="plus" class="w-3 h-3"></i>
+                    </button>
+                </a>
+                <a href="dashboard.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="trello" class="w-5 h-5"></i>
+                    <span>Projects</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation mr-1">3</span>
+                    <button class="text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateProjectDialog(event)" title="Create new project">
+                        <i data-feather="plus" class="w-3 h-3"></i>
+                    </button>
+                </a>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors ml-4">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation mr-1">12</span>
+                    <button class="text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateSprintDialog(event)" title="Create new sprint">
+                        <i data-feather="plus" class="w-3 h-3"></i>
+                    </button>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium mb-3 text-gray-900">Quick Filters</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                        <span class="text-sm text-gray-700">Current Sprint</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-sm text-gray-700">High Priority</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-sm text-gray-700">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button onclick="window.navigationManager?.showNavigationMenu()"
+                    class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-indigo-700 transition-colors mb-2"
+                    title="Quick Navigation (Ctrl+Shift+N)">
+                <i data-feather="compass" class="w-4 h-4 mr-2"></i>
+                <span>Navigate</span>
+            </button>
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Dashboard</h1>
+            <button class="bg-indigo-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-indigo-700 transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Refresh</span>
+            </button>
+        </header>
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block bg-indigo-600 text-white shadow-md">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">Dashboard</h1>
+                    <p class="text-indigo-200">Engineering productivity overview</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-700 hover:bg-indigo-800 px-3 py-1 rounded-md flex items-center transition-colors duration-200">
+                        <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                        <span>Refresh</span>
+                    </button>
+                    <div class="relative group">
+                        <img src="http://static.photos/people/200x200/42" alt="User" class="w-8 h-8 rounded-full cursor-pointer">
+                        <div class="absolute right-0 bottom-0 bg-green-500 rounded-full w-3 h-3 border-2 border-white"></div>
+                        <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20">
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Notifications</a>
+                            <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <div class="border-t my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6 md:pt-6">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-500">Tasks Completed</p>
+                            <h2 class="text-2xl font-bold">24</h2>
+                        </div>
+                        <div class="bg-indigo-100 p-2 rounded-md">
+                            <i data-feather="check-circle" class="w-5 h-5 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-green-500 flex items-center">
+                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                        <span>12% from last week</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-500">Code Quality</p>
+                            <h2 class="text-2xl font-bold">92%</h2>
+                        </div>
+                        <div class="bg-blue-100 p-2 rounded-md">
+                            <i data-feather="code" class="w-5 h-5 text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-green-500 flex items-center">
+                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                        <span>3% improvement</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-500">PRs Reviewed</p>
+                            <h2 class="text-2xl font-bold">18</h2>
+                        </div>
+                        <div class="bg-indigo-100 p-2 rounded-md">
+                            <i data-feather="git-pull-request" class="w-5 h-5 text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-red-500 flex items-center">
+                        <i data-feather="trending-down" class="w-4 h-4 mr-1"></i>
+                        <span>2 less than last week</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-500">Avg. Resolution</p>
+                            <h2 class="text-2xl font-bold">1.2d</h2>
+                        </div>
+                        <div class="bg-blue-100 p-2 rounded-md">
+                            <i data-feather="clock" class="w-5 h-5 text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-green-500 flex items-center">
+                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                        <span>Faster than team avg.</span>
+                    </div>
+                </div>
+            </div>
+            <!-- GitHub Activity -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i data-feather="github" class="w-5 h-5 mr-2"></i>
+                        <span>Code Activity</span>
+                    </h2>
+                    <div class="flex space-x-2">
+                        <button onclick="setTimeRange('week')" class="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md">Week</button>
+                        <button onclick="setTimeRange('month')" class="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md">Month</button>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="commitChart"></canvas>
+                </div>
+            </div>
+<!-- Jira Kanban -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i data-feather="trello" class="w-5 h-5 mr-2"></i>
+                        <span>Project Tasks</span>
+                    </h2>
+                    <button class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
+                        <i data-feather="plus" class="w-4 h-4 mr-1"></i>
+                        <span>Add Task</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="kanban-column">
+                        <h3 class="text-sm font-medium text-gray-500 mb-3">TO DO (5)</h3>
+                        <div class="space-y-3">
+                            <div class="border border-gray-200 rounded-md p-3 hover:shadow-md transition cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-sm font-medium">Implement auth middleware</span>
+                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">High</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">API-42</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Created 2d ago</span>
+                                    <div class="flex -space-x-1">
+                                        <img src="http://static.photos/people/200x200/43" class="w-5 h-5 rounded-full border border-white" title="Assigned to Sarah">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border border-gray-200 rounded-md p-3 hover:shadow-md transition cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-sm font-medium">Fix login page layout</span>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Medium</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">UI-17</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Created 1d ago</span>
+                                    <div class="flex -space-x-1">
+                                        <img src="http://static.photos/people/200x200/42" class="w-5 h-5 rounded-full border border-white" title="Assigned to you">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <h3 class="text-sm font-medium text-gray-500 mb-3">IN PROGRESS (3)</h3>
+                        <div class="space-y-3">
+                            <div class="border border-gray-200 rounded-md p-3 hover:shadow-md transition cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-sm font-medium">Optimize database queries</span>
+                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">High</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">PERF-8</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Started 1d ago</span>
+                                    <div class="flex -space-x-1">
+                                        <img src="http://static.photos/people/200x200/42" class="w-5 h-5 rounded-full border border-white" title="Assigned to you">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kanban-column">
+                        <h3 class="text-sm font-medium text-gray-500 mb-3">DONE (7)</h3>
+                        <div class="space-y-3">
+                            <div class="border border-gray-200 rounded-md p-3 hover:shadow-md transition cursor-pointer bg-green-50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-sm font-medium">Setup CI/CD pipeline</span>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Completed</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-2">DEV-33</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Completed today</span>
+                                    <div class="flex -space-x-1">
+                                        <img src="http://static.photos/people/200x200/42" class="w-5 h-5 rounded-full border border-white" title="Assigned to you">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Google Sheets Data -->
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i data-feather="file-text" class="w-5 h-5 mr-2"></i>
+                        <span>Custom Metrics</span>
+                    </h2>
+                    <button onclick="exportMetrics()" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
+                        <i data-feather="download" class="w-4 h-4 mr-1"></i>
+                        <span>Export</span>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Your Value</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team Avg.</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Code Coverage</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">85%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">78%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center text-green-500">
+                                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                                        <span>+7%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Bug Rate</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.1%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3.5%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center text-green-500">
+                                        <i data-feather="trending-down" class="w-4 h-4 mr-1"></i>
+                                        <span>-1.4%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Code Churn</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8.2%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12.5%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center text-green-500">
+                                        <i data-feather="trending-down" class="w-4 h-4 mr-1"></i>
+                                        <span>-4.3%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Velocity</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">42 pts</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38 pts</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center text-green-500">
+                                        <i data-feather="trending-up" class="w-4 h-4 mr-1"></i>
+                                        <span>+4 pts</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Cycle Time</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3.2d</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4.1d</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center text-green-500">
+                                        <i data-feather="trending-down" class="w-4 h-4 mr-1"></i>
+                                        <span>-0.9d</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </main>
+<script>
+        feather.replace();
+        
+        // Commit Chart
+        const commitCtx = document.getElementById('commitChart').getContext('2d');
+        const commitChart = new Chart(commitCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Commits',
+                    data: [8, 12, 6, 14, 10, 4, 2],
+                    backgroundColor: '#4f46e5',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function setTimeRange(range) {
+            const weekData = [8, 12, 6, 14, 10, 4, 2];
+            const monthData = [32, 45, 28, 52, 38, 22, 18, 42, 35, 29, 48, 40, 36, 31, 44, 39, 33, 47, 41, 34, 46, 37, 43, 30, 49, 35, 42, 38];
+            
+            if (range === 'week') {
+                commitChart.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                commitChart.data.datasets[0].data = weekData;
+                document.querySelectorAll('.flex.space-x-2 button')[0].className = 'px-3 py-1 text-sm bg-indigo-600 text-white rounded-md';
+                document.querySelectorAll('.flex.space-x-2 button')[1].className = 'px-3 py-1 text-sm bg-white border border-gray-300 rounded-md';
+            } else {
+                commitChart.data.labels = Array.from({length: 28}, (_, i) => `Day ${i + 1}`);
+                commitChart.data.datasets[0].data = monthData;
+                document.querySelectorAll('.flex.space-x-2 button')[0].className = 'px-3 py-1 text-sm bg-white border border-gray-300 rounded-md';
+                document.querySelectorAll('.flex.space-x-2 button')[1].className = 'px-3 py-1 text-sm bg-indigo-600 text-white rounded-md';
+            }
+            commitChart.update();
+        }
+
+        function exportMetrics() {
+            alert('Metrics exported successfully! This would download a CSV file in a real application.');
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Refresh button functionality
+        document.querySelectorAll('button:has([data-feather="refresh-cw"])').forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('spin');
+                setTimeout(() => {
+                    icon.classList.remove('spin');
+                    // Add fade-in animation to content
+                    document.querySelectorAll('.stat-card, .bg-white').forEach(el => {
+                        el.classList.add('fade-in');
+                        setTimeout(() => el.classList.remove('fade-in'), 500);
+                    });
+                }, 1000);
+            });
+        });
+
+        // Dark mode is now handled by the DarkModeManager
+        // Additional theme-specific logic for this page can go here
+        window.addEventListener('themeChanged', (e) => {
+            console.log('Theme changed to:', e.detail.theme);
+            
+            // Update any page-specific elements that need theme updates
+            const charts = document.querySelectorAll('canvas');
+            charts.forEach(canvas => {
+                // Chart theme updates will be handled by chartsManager if available
+                if (window.chartsManager && typeof window.chartsManager.updateTheme === 'function') {
+                    window.chartsManager.updateTheme(window.darkModeManager.getChartColors());
+                }
+            });
+        });
+
+        // Highlight active sidebar link based on current page
+        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+                link.classList.remove('text-gray-600', 'hover:text-indigo-600');
+                link.classList.add('text-indigo-600', 'font-medium');
+            } else {
+                link.classList.remove('active');
+                link.classList.add('text-gray-600', 'hover:text-indigo-600');
+                link.classList.remove('text-indigo-600', 'font-medium');
+            }
+        });
+</script>
+    <script>
+        // Initialize tooltips
+        document.querySelectorAll('.tooltip').forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function() {
+                this.querySelector('.tooltiptext').style.visibility = 'visible';
+                this.querySelector('.tooltiptext').style.opacity = '1';
+            });
+            tooltip.addEventListener('mouseleave', function() {
+                this.querySelector('.tooltiptext').style.visibility = 'hidden';
+                this.querySelector('.tooltiptext').style.opacity = '0';
+            });
+        });
+
+        // Initialize Time Tracker Widget
+        let timeTrackerWidget;
+        try {
+            timeTrackerWidget = new TimeTrackerWidget('timeTrackerWidget');
+            timeTrackerWidget.initializeWidget();
+        } catch (error) {
+            console.error('Error initializing time tracker widget:', error);
+        }
+
+        // Initialize Goals Widget
+        let goalsWidget;
+        try {
+            goalsWidget = new GoalsWidget('goalsWidget');
+            goalsWidget.initializeWidget();
+        } catch (error) {
+            console.error('Error initializing goals widget:', error);
+        }
+
+        // Initialize Help System
+        let helpSystem;
+        try {
+            helpSystem = new HelpSystem();
+            
+            // Register page-specific tour for dashboard
+            helpSystem.registerTour('dashboard-overview', {
+                name: 'Dashboard Overview',
+                description: 'Get familiar with your engineering productivity dashboard',
+                steps: [
+                    {
+                        element: '.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 .bg-white:first-child',
+                        title: 'Productivity Metrics',
+                        content: 'These cards show your key engineering metrics: tasks completed, code quality, PRs reviewed, and average resolution time.',
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#commitChart',
+                        title: 'Code Activity Chart',
+                        content: 'Track your daily commit activity. Toggle between weekly and monthly views to analyze patterns.',
+                        position: 'top'
+                    },
+                    {
+                        element: '.kanban-column',
+                        title: 'Task Overview',
+                        content: 'Quick view of your project tasks organized by status. Click on any task to see details.',
+                        position: 'top'
+                    },
+                    {
+                        element: '.overflow-x-auto table',
+                        title: 'Performance Metrics',
+                        content: 'Compare your engineering metrics with team averages. Green trends indicate improvements.',
+                        position: 'top'
+                    },
+                    {
+                        element: '.sidebar nav',
+                        title: 'Navigation Menu',
+                        content: 'Use the sidebar to navigate between different sections: tasks, metrics, code activity, and settings.',
+                        position: 'right'
+                    }
+                ]
+            });
+            
+            // Add keyboard shortcut for help
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F1') {
+                    e.preventDefault();
+                    helpSystem.toggleHelpPanel();
+                }
+            });
+            
+            // Show welcome tour for first-time users
+            if (!localStorage.getItem('epulse_welcomed')) {
+                setTimeout(() => {
+                    helpSystem.showWelcome();
+                    localStorage.setItem('epulse_welcomed', 'true');
+                }, 1500);
+            }
+            
+        } catch (error) {
+            console.error('Error initializing help system:', error);
+        }
+
+        // Close mobile menu when clicking sidebar links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        });
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
+
+        // Dialog functions for + buttons
+        function showCreateGoalDialog(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            alert('Create Roadmap Goal dialog would open here. This shows the flow for creating strategic goals.');
+        }
+
+        function showCreateProjectDialog(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            alert('Create Project dialog would open here. You would be able to associate this project with roadmap goals.');
+        }
+
+        function showCreateSprintDialog(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            alert('Create Sprint dialog would open here. You would be able to attach this sprint to projects or goals.');
+        }
+    </script>
+
+    <!-- Time Tracker Widget Container -->
+    <div id="timeTrackerWidget"></div>
+    
+    <!-- Goals Widget Container -->
+    <div id="goalsWidget"></div>
+
+</body>
+</html>
