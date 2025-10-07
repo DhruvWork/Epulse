@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - EngineerPulse</title>
+    <title>Settings - Sprint Layer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
         <!-- Logo Section -->
         <div class="flex items-center space-x-2 mb-8">
             <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
-            <h1 class="text-xl font-semibold">EngineerPulse</h1>
+            <h1 class="text-xl font-semibold">Sprint Layer</h1>
         </div>
 
         <!-- User Profile Section -->
@@ -44,27 +44,40 @@
 
         <!-- Navigation Links -->
         <nav class="space-y-1 mb-8">
-            <a href="index.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
+            <a href="dashboard.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
                 <i data-feather="home" class="w-4 h-4"></i>
                 <span>Dashboard</span>
             </a>
+            <a href="index.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
+                <i data-feather="map" class="w-4 h-4"></i>
+                <span>Roadmap</span>
+            </a>
+            <div class="space-y-2">
+                <a href="project-tasks.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
+                    <i data-feather="trello" class="w-4 h-4"></i>
+                    <span>Projects</span>
+                    <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
+                </a>
+                
+                <!-- Project Selection Dropdown -->
+                <div class="ml-6 mr-3">
+                    <select id="project-selector" class="w-full text-sm border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" onchange="switchProject(this.value)">
+                        <option value="all">All Projects</option>
+                        <option value="platform-modernization">Platform Modernization</option>
+                        <option value="mobile-app">Mobile App Development</option>
+                        <option value="data-analytics">Data Analytics Platform</option>
+                        <option value="security-upgrade">Security Upgrade</option>
+                    </select>
+                </div>
+            </div>
             <a href="code-activity.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
                 <i data-feather="github" class="w-4 h-4"></i>
                 <span>Code Activity</span>
                 <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation">12</span>
             </a>
-            <a href="project-tasks.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
-                <i data-feather="trello" class="w-4 h-4"></i>
-                <span>Project Tasks</span>
-                <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation">3</span>
-            </a>
             <a href="metrics.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
                 <i data-feather="bar-chart-2" class="w-4 h-4"></i>
                 <span>Metrics</span>
-            </a>
-            <a href="roadmap.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
-                <i data-feather="map" class="w-4 h-4"></i>
-                <span>Roadmap</span>
             </a>
             <a href="add-data.html" class="sidebar-link flex items-center space-x-2 text-gray-600 hover:text-indigo-600">
                 <i data-feather="database" class="w-4 h-4"></i>
@@ -118,7 +131,7 @@
             <div class="px-6 py-4 flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl font-bold">Settings</h1>
-                    <p class="text-indigo-200">Customize your EngineerPulse experience</p>
+                    <p class="text-indigo-200">Customize your Sprint Layer experience</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     <button class="btn btn-outline text-sm bg-white text-indigo-600 hover:bg-indigo-50">
@@ -738,7 +751,7 @@
             // Register page-specific tour for settings page
             helpSystem.registerTour('settings-configuration', {
                 name: 'Settings & Configuration',
-                description: 'Customize your EngineerPulse experience',
+                description: 'Customize your Sprint Layer experience',
                 steps: [
                     {
                         element: '#profile',
@@ -815,6 +828,54 @@
                 overlay.classList.remove('show');
             }
         });
+        
+        function switchProject(projectId) {
+            // Navigate directly to the project's Kanban board
+            const projectUrls = {
+                'all': 'project-tasks.html',
+                'platform-modernization': 'platform-modernization.html',
+                'mobile-app': 'mobile-app.html',
+                'data-analytics': 'data-analytics.html',
+                'security-upgrade': 'security-upgrade.html'
+            };
+            
+            if (projectUrls[projectId]) {
+                window.location.href = projectUrls[projectId];
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full`;
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            notification.className += ` ${bgColor} text-white`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i data-feather="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            feather.replace();
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>

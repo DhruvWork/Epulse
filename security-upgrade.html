@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Upgrade - Sprint Layer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/timetracker.js"></script>
+    <script src="js/timetracker-widget.js"></script>
+    <script src="js/collaboration-manager.js"></script>
+    <script src="js/collaboration-widget.js"></script>
+    <script src="js/search-filter-manager.js"></script>
+    <script src="js/search-widget.js"></script>
+    <script src="js/drag-drop-manager.js"></script>
+    <script src="js/help-system.js"></script>
+    <script src="js/navigation-manager.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/performance-monitor.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-2 p-4 border-b border-gray-200">
+            <i data-feather="activity" class="w-6 h-6 text-indigo-600"></i>
+            <h1 class="text-xl font-semibold text-gray-800">Sprint Layer</h1>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="http://static.photos/people/200x200/42" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-900 truncate">Alex Johnson</h3>
+                    <p class="text-sm text-gray-500 truncate">Senior Software Engineer</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+            <div class="space-y-1">
+                <a href="dashboard.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="index.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="map" class="w-5 h-5"></i>
+                    <span>Roadmap</span>
+                    <button class="ml-auto text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateGoalDialog(event)" title="Create new roadmap goal">
+                        <i data-feather="plus" class="w-3 h-3"></i>
+                    </button>
+                </a>
+                <div class="space-y-2">
+                    <a href="project-tasks.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium active">
+                        <i data-feather="trello" class="w-5 h-5"></i>
+                        <span>Projects</span>
+                        <span class="ml-auto bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full pulse-animation mr-1">3</span>
+                        <button class="text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateProjectDialog(event)" title="Create new project">
+                            <i data-feather="plus" class="w-3 h-3"></i>
+                        </button>
+                    </a>
+                    
+                    <!-- Project Selection Dropdown -->
+                    <div class="ml-8 mr-3">
+                        <select id="project-selector" class="w-full text-sm border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" onchange="switchProject(this.value)">
+                            <option value="all">All Projects</option>
+                            <option value="platform-modernization">Platform Modernization</option>
+                            <option value="mobile-app">Mobile App Development</option>
+                            <option value="data-analytics">Data Analytics Platform</option>
+                            <option value="security-upgrade" selected>Security Upgrade</option>
+                        </select>
+                    </div>
+                </div>
+                <a href="code-activity.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors ml-4">
+                    <i data-feather="github" class="w-5 h-5"></i>
+                    <span>Code Activity</span>
+                    <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full pulse-animation mr-1">12</span>
+                    <button class="text-gray-400 hover:text-indigo-600 p-1" onclick="showCreateSprintDialog(event)" title="Create new sprint">
+                        <i data-feather="plus" class="w-3 h-3"></i>
+                    </button>
+                </a>
+                <a href="metrics.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Metrics</span>
+                </a>
+                <a href="add-data.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="database" class="w-5 h-5"></i>
+                    <span>Add Data</span>
+                    <span class="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full pulse-animation">New</span>
+                </a>
+                <a href="settings.html" class="sidebar-link flex items-center space-x-3 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                    <i data-feather="settings" class="w-5 h-5"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <!-- Time Tracker Widget -->
+            <div class="mt-6">
+                <div id="timeTrackerContainer"></div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-medium mb-3 text-gray-900">Quick Filters</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                        <span class="text-sm text-gray-700">Current Sprint</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span class="text-sm text-gray-700">High Priority</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-sm text-gray-700">My Tasks</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-sm text-gray-700">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="p-4 border-t border-gray-200">
+            <button class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-purple-700 transition-colors mb-2">
+                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                <span>New Task</span>
+            </button>
+            <button id="theme-toggle" class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors">
+                <i data-feather="moon" class="w-4 h-4 mr-2"></i>
+                <span>Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="md:ml-64 min-h-screen bg-gray-50">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+            <button class="mobile-menu-button text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                <i data-feather="menu" class="w-6 h-6"></i>
+            </button>
+            <h1 class="font-semibold text-gray-900">Security Upgrade</h1>
+            <button class="bg-purple-600 text-white px-3 py-1.5 rounded-md flex items-center hover:bg-purple-700 transition-colors">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i>
+                <span class="hidden sm:inline">Refresh</span>
+            </button>
+        </header>
+
+        <!-- Page Content -->
+        <div class="p-4 md:p-6">
+            <!-- Page Header -->
+            <div class="hidden md:flex justify-between items-center mb-6">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <a href="project-tasks.html" class="text-gray-500 hover:text-gray-700">
+                            <i data-feather="arrow-left" class="w-5 h-5"></i>
+                        </a>
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i data-feather="shield" class="w-5 h-5 text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Security Upgrade</h1>
+                            <p class="text-gray-600">Authentication & authorization enhancement</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center space-x-1">
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">High Priority</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <i data-feather="users" class="w-4 h-4"></i>
+                            <span>2 team members</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <i data-feather="calendar" class="w-4 h-4"></i>
+                            <span>Target: Q4 2024</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <i data-feather="activity" class="w-4 h-4"></i>
+                            <span>78% Complete</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="showCreateSprintDialog('security-upgrade')" class="bg-purple-600 text-white px-4 py-2 rounded-md flex items-center hover:bg-purple-700 transition-colors">
+                        <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                        <span>New Task</span>
+                    </button>
+                    <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-200 transition-colors">
+                        <i data-feather="refresh-cw" class="w-4 h-4 mr-2"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Page Header -->
+            <div class="md:hidden mb-4">
+                <div class="flex items-center space-x-3 mb-3">
+                    <a href="project-tasks.html" class="text-gray-500 hover:text-gray-700">
+                        <i data-feather="arrow-left" class="w-5 h-5"></i>
+                    </a>
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i data-feather="shield" class="w-4 h-4 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm">Authentication & authorization</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="showCreateSprintDialog('security-upgrade')" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-md flex items-center justify-center hover:bg-purple-700 transition-colors">
+                        <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                        <span>New Task</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <!-- To Do Column -->
+                <div class="kanban-column bg-white rounded-lg shadow-sm">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900">To Do</h3>
+                            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">2</span>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3" data-status="todo">
+                        <!-- Task Card 1 -->
+                        <div class="task-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-001" data-task-name="Security Audit Report" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Epic</span>
+                                <div class="flex items-center space-x-1">
+                                    <button class="start-timer-btn text-gray-400 hover:text-purple-600 transition-colors" title="Start Timer">
+                                        <i data-feather="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Security Audit Report</h4>
+                            <p class="text-sm text-gray-600 mb-3">Conduct comprehensive security audit and document findings</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/44" alt="Mike Rodriguez" class="w-5 h-5 rounded-full">
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded">High</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2 hidden"></div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="task-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-002" data-task-name="Vulnerability Assessment" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <button class="start-timer-btn text-gray-400 hover:text-purple-600 transition-colors" title="Start Timer">
+                                        <i data-feather="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Vulnerability Assessment</h4>
+                            <p class="text-sm text-gray-600 mb-3">Perform automated and manual vulnerability scanning</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/42" alt="Alex Johnson" class="w-5 h-5 rounded-full">
+                                    <span>Alex Johnson</span>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="kanban-column bg-white rounded-lg shadow-sm">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900">In Progress</h3>
+                            <span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">1</span>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3" data-status="in-progress">
+                        <!-- Task Card 3 -->
+                        <div class="task-card bg-white border-l-4 border-l-blue-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-003" data-task-name="Rate Limiting Implementation" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">Story</span>
+                                <div class="flex items-center space-x-1">
+                                    <button class="start-timer-btn text-gray-400 hover:text-purple-600 transition-colors" title="Start Timer">
+                                        <i data-feather="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Rate Limiting Implementation</h4>
+                            <p class="text-sm text-gray-600 mb-3">Implement API rate limiting to prevent abuse and DDoS attacks</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/44" alt="Mike Rodriguez" class="w-5 h-5 rounded-full">
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded">High</span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>Progress</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill bg-purple-500" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Column -->
+                <div class="kanban-column bg-white rounded-lg shadow-sm">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900">Review</h3>
+                            <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded-full">2</span>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3" data-status="review">
+                        <!-- Task Card 4 -->
+                        <div class="task-card bg-white border-l-4 border-l-yellow-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-004" data-task-name="JWT Token Validation" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <button class="start-timer-btn text-gray-400 hover:text-purple-600 transition-colors" title="Start Timer">
+                                        <i data-feather="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">JWT Token Validation</h4>
+                            <p class="text-sm text-gray-600 mb-3">Enhance JWT token validation and refresh mechanism</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/42" alt="Alex Johnson" class="w-5 h-5 rounded-full">
+                                    <span>Alex Johnson</span>
+                                </div>
+                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded">High</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2 hidden"></div>
+                        </div>
+
+                        <!-- Task Card 5 -->
+                        <div class="task-card bg-white border-l-4 border-l-yellow-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-005" data-task-name="Input Sanitization" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <button class="start-timer-btn text-gray-400 hover:text-purple-600 transition-colors" title="Start Timer">
+                                        <i data-feather="play" class="w-4 h-4"></i>
+                                    </button>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Input Sanitization</h4>
+                            <p class="text-sm text-gray-600 mb-3">Implement comprehensive input validation and sanitization</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/44" alt="Mike Rodriguez" class="w-5 h-5 rounded-full">
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Medium</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Done Column -->
+                <div class="kanban-column bg-white rounded-lg shadow-sm">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900">Done</h3>
+                            <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">5</span>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3" data-status="done">
+                        <!-- Task Card 6 -->
+                        <div class="task-card bg-white border-l-4 border-l-green-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-006" data-task-name="OAuth 2.0 Integration" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">Story</span>
+                                <div class="flex items-center space-x-1">
+                                    <i data-feather="check-circle" class="w-4 h-4 text-green-500"></i>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">OAuth 2.0 Integration</h4>
+                            <p class="text-sm text-gray-600 mb-3">Implement OAuth 2.0 authentication with Google and GitHub</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/42" alt="Alex Johnson" class="w-5 h-5 rounded-full">
+                                    <span>Alex Johnson</span>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2">Time: 14h 30m</div>
+                        </div>
+
+                        <!-- Task Card 7 -->
+                        <div class="task-card bg-white border-l-4 border-l-green-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-007" data-task-name="Password Encryption" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <i data-feather="check-circle" class="w-4 h-4 text-green-500"></i>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Password Encryption</h4>
+                            <p class="text-sm text-gray-600 mb-3">Upgrade password hashing to bcrypt with salt</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/44" alt="Mike Rodriguez" class="w-5 h-5 rounded-full">
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2">Time: 6h 45m</div>
+                        </div>
+
+                        <!-- Task Card 8 -->
+                        <div class="task-card bg-white border-l-4 border-l-green-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-008" data-task-name="HTTPS Configuration" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <i data-feather="check-circle" class="w-4 h-4 text-green-500"></i>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">HTTPS Configuration</h4>
+                            <p class="text-sm text-gray-600 mb-3">Configure SSL/TLS certificates and enforce HTTPS</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/42" alt="Alex Johnson" class="w-5 h-5 rounded-full">
+                                    <span>Alex Johnson</span>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2">Time: 4h 20m</div>
+                        </div>
+
+                        <!-- Task Card 9 -->
+                        <div class="task-card bg-white border-l-4 border-l-green-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-009" data-task-name="Session Management" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">Story</span>
+                                <div class="flex items-center space-x-1">
+                                    <i data-feather="check-circle" class="w-4 h-4 text-green-500"></i>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Session Management</h4>
+                            <p class="text-sm text-gray-600 mb-3">Implement secure session handling and timeout policies</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/44" alt="Mike Rodriguez" class="w-5 h-5 rounded-full">
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2">Time: 9h 15m</div>
+                        </div>
+
+                        <!-- Task Card 10 -->
+                        <div class="task-card bg-white border-l-4 border-l-green-500 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" 
+                             data-task-id="SU-010" data-task-name="CORS Configuration" tabindex="0">
+                            <div class="flex items-start justify-between mb-2">
+                                <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">Task</span>
+                                <div class="flex items-center space-x-1">
+                                    <i data-feather="check-circle" class="w-4 h-4 text-green-500"></i>
+                                    <i data-feather="more-horizontal" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">CORS Configuration</h4>
+                            <p class="text-sm text-gray-600 mb-3">Configure Cross-Origin Resource Sharing policies</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-2">
+                                    <img src="http://static.photos/people/200x200/42" alt="Alex Johnson" class="w-5 h-5 rounded-full">
+                                    <span>Alex Johnson</span>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="task-time-display text-xs text-gray-500 mt-2">Time: 3h 10m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="mt-8">
+                <div id="searchWidget"></div>
+            </div>
+
+            <!-- Collaboration Section -->
+            <div class="mt-8">
+                <div id="collaborationWidget"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Dark mode toggle
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.setAttribute('data-feather', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            feather.replace();
+        });
+
+        // Project switching functionality
+        function switchProject(projectValue) {
+            const projectUrls = {
+                'all': 'project-tasks.html',
+                'platform-modernization': 'platform-modernization.html',
+                'mobile-app': 'mobile-app.html',
+                'data-analytics': 'data-analytics.html',
+                'security-upgrade': 'security-upgrade.html'
+            };
+            
+            if (projectValue !== 'security-upgrade' && projectUrls[projectValue]) {
+                window.location.href = projectUrls[projectValue];
+            }
+        }
+
+        // Initialize project selector
+        document.addEventListener('DOMContentLoaded', function() {
+            const selector = document.getElementById('project-selector');
+            if (selector) {
+                selector.value = 'security-upgrade';
+            }
+        });
+
+        // Initialize Time Tracker
+        const timeTracker = new TimeTracker();
+        const timeTrackerContainer = document.getElementById('timeTrackerContainer');
+        const timeTrackerWidget = new TimeTrackerWidget(timeTrackerContainer, timeTracker);
+
+        // Update task time displays
+        function updateTaskTimeDisplays() {
+            document.querySelectorAll('.task-card').forEach(card => {
+                const taskId = card.dataset.taskId;
+                if (taskId) {
+                    const timeInfo = timeTracker.getTotalTimeForTask(taskId);
+                    const timeDisplay = card.querySelector('.task-time-display');
+                    if (timeDisplay && timeInfo.duration > 0) {
+                        timeDisplay.textContent = timeInfo.formatted;
+                        timeDisplay.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+
+        // Start timer buttons
+        document.querySelectorAll('.start-timer-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const card = this.closest('.task-card');
+                const taskId = card.dataset.taskId;
+                const taskName = card.dataset.taskName;
+                
+                if (taskId && taskName) {
+                    timeTrackerWidget.startTracking(taskId, taskName);
+                }
+            });
+        });
+
+        // Task card click handlers
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.start-timer-btn')) {
+                    return;
+                }
+                
+                e.preventDefault();
+                const taskId = this.querySelector('h4').textContent;
+                alert(`Task details for ${taskId} would open here.`);
+            });
+        });
+
+        // Update time displays on page load
+        updateTaskTimeDisplays();
+
+        // Update time displays when sessions complete
+        timeTracker.on('onStop', () => {
+            setTimeout(updateTaskTimeDisplays, 100);
+        });
+    </script>
+</body>
+</html>
