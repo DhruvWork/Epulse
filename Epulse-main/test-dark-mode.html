@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="container bg-white">
+        <h1 class="text-gray-900">Dark Mode Test</h1>
+        <p class="text-gray-600">Click the button below to toggle dark mode.</p>
+        
+        <button id="theme-toggle" class="bg-gray-200 text-gray-700">
+            <i data-feather="moon"></i>
+            <span>Dark Mode</span>
+        </button>
+        
+        <div style="margin-top: 20px;">
+            <h2 class="text-gray-800">Test Elements</h2>
+            <p class="text-gray-600">This is some gray text</p>
+            <div class="bg-gray-100" style="padding: 10px; margin: 10px 0;">
+                <p class="text-gray-700">Content in gray background</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>Console Output:</h3>
+            <div id="console" style="background: #f0f0f0; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Intercept console.log to display on page
+        const consoleDiv = document.getElementById('console');
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.innerHTML += '<div style="color: blue;">' + args.join(' ') + '</div>';
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            consoleDiv.innerHTML += '<div style="color: red;">' + args.join(' ') + '</div>';
+        };
+        
+        // Manual test button
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Page loaded');
+            console.log('Body classes:', document.body.className);
+            console.log('HTML classes:', document.documentElement.className);
+        });
+    </script>
+</body>
+</html>

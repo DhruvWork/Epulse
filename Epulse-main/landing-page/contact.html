@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Opsium - We're here to help you transform project management">
+    <title>Contact Opsium</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <span class="logo-mark" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </span>
+                    <h1>Opsium</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="index.html#plans">Plans</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="../dashboard.html" class="btn-primary">Dashboard</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="lets-talk" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Let's Talk</h1>
+                    <p class="hero-subtitle">Tell us about your team and we'll get you set up on Opsium</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-form-section">
+            <div class="container">
+                <div class="contact-form-card">
+                    <h2 class="section-title">Get In Touch</h2>
+                    <p style="text-align:center; color:#4b5563; margin-bottom:2rem;">Share a few details and we'll reach out with the right plan and a tailored walkthrough.</p>
+                    <form class="contact-form" action="#" method="post">
+                        <div class="contact-form-grid">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required placeholder="Jamie Smith">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Work Email *</label>
+                                <input type="email" id="email" name="email" required placeholder="you@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="business-name">Business Name (optional)</label>
+                                <input type="text" id="business-name" name="businessName" placeholder="Opsium Ltd">
+                            </div>
+                            <div class="form-group">
+                                <label for="business-size">Business Size (optional)</label>
+                                <select id="business-size" name="businessSize">
+                                    <option value="">Select team size</option>
+                                    <option value="1-10">1 - 10 employees</option>
+                                    <option value="11-50">11 - 50 employees</option>
+                                    <option value="51-200">51 - 200 employees</option>
+                                    <option value="201-500">201 - 500 employees</option>
+                                    <option value="500+">500+ employees</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Your Role (optional)</label>
+                                <input type="text" id="role" name="role" placeholder="Product Lead">
+                            </div>
+                            <div class="form-group">
+                                <label for="reason">Reason for using Opsium *</label>
+                                <textarea id="reason" name="reason" required placeholder="Tell us what you want to achieve and how we can help"></textarea>
+                                <span class="form-helper">Share what success looks like for you so we can tailor the setup.</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem; text-align: right;">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Opsium. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
